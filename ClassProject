@@ -1,0 +1,32 @@
+import requests
+
+def main():
+  print("Hello! please enter a choice or zipcode you would like to see the forecast for.")
+  print("Would you like to select a choice by zipcode or name and state?")
+  print("Enter zip or name.")
+  choice = input()
+  if choice == 'zip' or choice == 'ZIP':
+    print("You have elected to search by zipcode.")
+    print("Please enter the zip code for your city.")
+    code = input()
+    zipSearch()
+  elif choice == 'name' or choice == 'NAME':
+    print("You have elected to search by choice name and state.")
+    print("Please enter the city and state. (city,ST)")
+    city = input()
+    nameSearch()
+  else:
+    print("You did not enter zip or name.")
+
+def zipSearch(code):
+  from uszipcode import SearchEngine
+  engine = SearchEngine()
+  zipcode = engine.by_zipcode()
+  print(zipcode.zipcode, zipcode.major_choice,)
+
+def nameSearch(city):
+  from uszipcode import SearchEngine
+  engine = SearchEngine()
+  zipcodes = engine.by_choice_and_state(choice="Los Angeles", state="california")
+  for zipcode in zipcodes:
+    print(zipcode.zipcode, zipcode.major_choice)
