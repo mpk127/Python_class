@@ -1,32 +1,49 @@
 import requests
+import json
 
-def main():
-  print("Hello! please enter a choice or zipcode you would like to see the forecast for.")
-  print("Would you like to select a choice by zipcode or name and state?")
-  print("Enter zip or name.")
-  choice = input()
-  if choice == 'zip' or choice == 'ZIP':
-    print("You have elected to search by zipcode.")
-    print("Please enter the zip code for your city.")
-    code = input()
-    zipSearch()
-  elif choice == 'name' or choice == 'NAME':
-    print("You have elected to search by choice name and state.")
-    print("Please enter the city and state. (city,ST)")
-    city = input()
-    nameSearch()
-  else:
-    print("You did not enter zip or name.")
+def getWeather(): #trying to sort out call for forcast information
+  response = requests.get("http://api.openweathermap.org/data/2.5/forecast?id=524901&appid={d1082e9e37187115ba073c9cca5c9043}")
+  print(response.json())
 
-def zipSearch(code):
+def zipSearch(code): #identifies city by zip code
   from uszipcode import SearchEngine
   engine = SearchEngine()
-  zipcode = engine.by_zipcode()
-  print(zipcode.zipcode, zipcode.major_choice,)
+  zipcode = engine.by_zipcode(code)
+  print("You have selected...")
+  print(zipcode.zipcode, zipcode.major_city, zipcode.state)
 
-def nameSearch(city):
+def nameSearch(city, state): #identifies city by name
   from uszipcode import SearchEngine
   engine = SearchEngine()
-  zipcodes = engine.by_choice_and_state(choice="Los Angeles", state="california")
+  zipcodes = engine.by_city_and_state(city, state)
   for zipcode in zipcodes:
-    print(zipcode.zipcode, zipcode.major_choice)
+    print("You have selected...")
+    print(zipcode.zipcode, zipcode.major_city, zipcode.state)
+
+#main function
+print("Hello! Would you like to see the weather for a city by zipcode or name and state?")
+print("Enter zip or name.")
+choice = input()
+if choice == 'zip' or choice == 'ZIP':#search for city by zipcode
+  print("You have elected to search by zipcode.")
+  print("Please enter the zip code for your city.")
+  code = input()
+  zipSearch(code)
+  getWeather(code)
+elif choice == 'name' or choice == 'NAME':#search for city by name
+  print("You have elected to search by city name and state.")
+  print("Please enter the city.")
+  city= input()
+  print("Please enter the state.")
+  state = input()
+  nameSearch(city, state)
+  getWeather()
+else:
+  print("You did not enter zip or name.")
+
+print("Would you like to try another city?")#begining of restart cycle
+restart = input()
+if restart == 'yes' or restart == 'y':
+  print("ok!")
+else:
+  print("Goodbye")
