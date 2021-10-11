@@ -1,16 +1,32 @@
+#Package imports
 import requests
+import time
 import json
-
-def getWeather(): #trying to sort out call for forcast information
-  response = requests.get("http://api.openweathermap.org/data/2.5/forecast?id=524901&appid={d1082e9e37187115ba073c9cca5c9043}")
-  print(response.json())
+import os
 
 def zipSearch(code): #identifies city by zip code
   from uszipcode import SearchEngine
   engine = SearchEngine()
   zipcode = engine.by_zipcode(code)
   print("You have selected...")
-  print(zipcode.zipcode, zipcode.major_city, zipcode.state)
+  print(zipcode.zipcode, zipcode.major_city, zipcode.state)#Identify target city
+  #Attempt to pull from data via webscraping
+  api = "https://api.openweathermap.org/data/2.5/weather?q=" + zipcode.major_city +"&appid=d5751b1a9e2e4b2b8c7983646072da8b"
+  json_data = requests.get(api).json()
+  condition = json_data['weather'][0]['main']
+  temp = int(json_data['main']['temp'] - 459.67)
+  min_temp = int(json_data['main']['temp_min'] - 459.67)
+  max_temp = int(json_data['main']['temp_max'] - 459.67)
+  pressure = json_data['main']['pressure']
+  humidity =json_data['main']['humidity']
+  wind = json_data['wind']['speed']
+  sunrise = time.strftime("%I:%M:%S", time.gmtime(json_data['sys']['sunrise'] + 21600))
+  sunset = time.strftime("%I:%M:%S", time.gmtime(json_data['sys']['sunset'] + 21600))
+  #Setup and display final output
+  final_info = condition + "\n" + str(temp) + "°F."
+  final_data = "\n" + "Max Temp:" + str(max_temp) + "°F" + "\n" + "Min Temp:" + str(min_temp) + "°F" + "\n" + "Pressure:" + str(pressure) + "\n" + "Humidity:" + str(humidity) + "%" + "\n" + "Wind Speed:" + str(wind) + "\n" + "Sunrise:" + sunrise + "\n" + "Sunset:" + sunset
+  print (final_info)
+  print (final_data)
 
 def nameSearch(city, state): #identifies city by name
   from uszipcode import SearchEngine
@@ -18,7 +34,24 @@ def nameSearch(city, state): #identifies city by name
   zipcodes = engine.by_city_and_state(city, state)
   for zipcode in zipcodes:
     print("You have selected...")
-    print(zipcode.zipcode, zipcode.major_city, zipcode.state)
+    print(zipcode.zipcode, zipcode.major_city, zipcode.state)#Identify target city
+    #Attempt to pull from data via webscraping
+    api = "https://api.openweathermap.org/data/2.5/weather?q=" + city +"&appid=d5751b1a9e2e4b2b8c7983646072da8b"
+    json_data = requests.get(api).json()
+    condition = json_data['weather'][0]['main']
+    temp = int(json_data['main']['temp'] - 459.67)
+    min_temp = int(json_data['main']['temp_min'] - 459.67)
+    max_temp = int(json_data['main']['temp_max'] - 459.67)
+    pressure = json_data['main']['pressure']
+    humidity =json_data['main']['humidity']
+    wind = json_data['wind']['speed']
+    sunrise = time.strftime("%I:%M:%S", time.gmtime(json_data['sys']['sunrise'] + 21600))
+    sunset = time.strftime("%I:%M:%S", time.gmtime(json_data['sys']['sunset'] + 21600))
+    #Setup and display final output
+    final_info = condition + "\n" + str(temp) + "°F."
+    final_data = "\n" + "Max Temp:" + str(max_temp) + "°F" + "\n" + "Min Temp:" + str(min_temp) + "°F" + "\n" + "Pressure:" + str(pressure) + "\n" + "Humidity:" + str(humidity) + "%" + "\n" + "Wind Speed:" + str(wind) + "\n" + "Sunrise:" + sunrise + "\n" + "Sunset:" + sunset
+    print (final_info)
+    print (final_data)
 
 #main function
 print("Hello! Would you like to see the weather for a city by zipcode or name and state?")
@@ -29,7 +62,6 @@ if choice == 'zip' or choice == 'ZIP':#search for city by zipcode
   print("Please enter the zip code for your city.")
   code = input()
   zipSearch(code)
-  getWeather(code)
 elif choice == 'name' or choice == 'NAME':#search for city by name
   print("You have elected to search by city name and state.")
   print("Please enter the city.")
@@ -37,13 +69,12 @@ elif choice == 'name' or choice == 'NAME':#search for city by name
   print("Please enter the state.")
   state = input()
   nameSearch(city, state)
-  getWeather()
 else:
   print("You did not enter zip or name.")
 
-print("Would you like to try another city?")#begining of restart cycle
-restart = input()
-if restart == 'yes' or restart == 'y':
-  print("ok!")
+#attempt another city
+result=input("\nDo you want to restart the program? [y/n] > ")
+if result=='y':
+     os.system('python "main.py"')
 else:
-  print("Goodbye")
+     print("\nThe program will be closed...")
