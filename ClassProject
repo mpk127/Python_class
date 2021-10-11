@@ -14,9 +14,12 @@ def zipSearch(code): #identifies city by zip code
   api = "https://api.openweathermap.org/data/2.5/weather?q=" + zipcode.major_city +"&appid=d5751b1a9e2e4b2b8c7983646072da8b"
   json_data = requests.get(api).json()
   condition = json_data['weather'][0]['main']
-  temp = int(json_data['main']['temp'] - 459.67)
-  min_temp = int(json_data['main']['temp_min'] - 459.67)
-  max_temp = int(json_data['main']['temp_max'] - 459.67)
+  ctemp = int(json_data['main']['temp'] - 273.15)
+  temp = ctemp * 1.8 +32
+  min_ctemp = int(json_data['main']['temp_min'] - 273.15)
+  min_temp = min_ctemp * 1.8 + 32
+  max_ctemp = int(json_data['main']['temp_max'] - 273.15)
+  max_temp = max_ctemp * 1.8 + 32
   pressure = json_data['main']['pressure']
   humidity =json_data['main']['humidity']
   wind = json_data['wind']['speed']
@@ -24,7 +27,7 @@ def zipSearch(code): #identifies city by zip code
   sunset = time.strftime("%I:%M:%S", time.gmtime(json_data['sys']['sunset'] + 21600))
   #Setup and display final output
   final_info = condition + "\n" + str(temp) + "°F."
-  final_data = "\n" + "Max Temp:" + str(max_temp) + "°F" + "\n" + "Min Temp:" + str(min_temp) + "°F" + "\n" + "Pressure:" + str(pressure) + "\n" + "Humidity:" + str(humidity) + "%" + "\n" + "Wind Speed:" + str(wind) + "\n" + "Sunrise:" + sunrise + "\n" + "Sunset:" + sunset
+  final_data = "Max Temp:" + str(max_temp) + "°F" + "\n" + "Min Temp:" + str(min_temp) + "°F" + "\n" + "Pressure:" + str(pressure) + "\n" + "Humidity:" + str(humidity) + "%" + "\n" + "Wind Speed:" + str(wind) + "\n" + "Sunrise:" + sunrise + "\n" + "Sunset:" + sunset
   print (final_info)
   print (final_data)
 
@@ -39,9 +42,12 @@ def nameSearch(city, state): #identifies city by name
     api = "https://api.openweathermap.org/data/2.5/weather?q=" + city +"&appid=d5751b1a9e2e4b2b8c7983646072da8b"
     json_data = requests.get(api).json()
     condition = json_data['weather'][0]['main']
-    temp = int(json_data['main']['temp'] - 459.67)
-    min_temp = int(json_data['main']['temp_min'] - 459.67)
-    max_temp = int(json_data['main']['temp_max'] - 459.67)
+    ctemp = int(json_data['main']['temp'] - 273.15)
+    temp = ctemp * 1.8 +32
+    min_ctemp = int(json_data['main']['temp_min'] - 273.15)
+    min_temp = min_ctemp * 1.8 + 32
+    max_ctemp = int(json_data['main']['temp_max'] - 273.15)
+    max_temp = max_ctemp * 1.8 + 32
     pressure = json_data['main']['pressure']
     humidity =json_data['main']['humidity']
     wind = json_data['wind']['speed']
@@ -49,7 +55,7 @@ def nameSearch(city, state): #identifies city by name
     sunset = time.strftime("%I:%M:%S", time.gmtime(json_data['sys']['sunset'] + 21600))
     #Setup and display final output
     final_info = condition + "\n" + str(temp) + "°F."
-    final_data = "\n" + "Max Temp:" + str(max_temp) + "°F" + "\n" + "Min Temp:" + str(min_temp) + "°F" + "\n" + "Pressure:" + str(pressure) + "\n" + "Humidity:" + str(humidity) + "%" + "\n" + "Wind Speed:" + str(wind) + "\n" + "Sunrise:" + sunrise + "\n" + "Sunset:" + sunset
+    final_data = "Max Temp:" + str(max_temp) + "°F" + "\n" + "Min Temp:" + str(min_temp) + "°F" + "\n" + "Pressure:" + str(pressure) + "\n" + "Humidity:" + str(humidity) + "%" + "\n" + "Wind Speed:" + str(wind) + "\n" + "Sunrise:" + sunrise + "\n" + "Sunset:" + sunset
     print (final_info)
     print (final_data)
 
